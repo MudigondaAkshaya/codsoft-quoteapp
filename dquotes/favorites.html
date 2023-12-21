@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Quotes</title>
+    <style>
+        body {
+            background-color: #ffc0cb; /* Pink background color */
+            margin: 0; /* Remove default margin */
+            font-family: Arial, sans-serif; /* Specify a font family */
+        }
+
+        .quote-box {
+            background-color: #fff; /* White background color for the quote box */
+            width: 70%; /* Adjust the width of the quote box */
+            margin: auto; /* Center the quote box */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+            margin-top: 50px; /* Adjust the top margin */
+        }
+
+        .favorite-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px; /* Adjust the spacing between boxes */
+            border-radius: 5px;
+            position: relative; /* Add relative positioning for absolute positioning of the remove button */
+        }
+
+        .favorite-box p {
+            margin: 0; /* Remove default margin for paragraphs */
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            color: #ff0000; /* Red color for the remove button */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-box">
+        <h2>Favorites</h2>
+        <div id="favorites-list"></div>
+    </div>
+    <script>
+        const favoritesList = document.getElementById("favorites-list");
+
+        function displayFavorites() {
+            const favoriteQuotes = JSON.parse(localStorage.getItem("favoriteQuotes")) || [];
+
+            if (favoriteQuotes.length > 0) {
+                let html = "";
+                favoriteQuotes.forEach((quote, index) => {
+                    html += `<div class="favorite-box">
+                                <span class="remove-button" onclick="removeFromFavorites(${index})">Remove</span>
+                                <p>${index + 1}. ${quote.content}</p>
+                                <p>-${quote.author}</p>
+                             </div>`;
+                });
+                favoritesList.innerHTML = html;
+            } else {
+                favoritesList.innerHTML = "<p>No favorite quotes saved yet.</p>";
+            }
+        }
+
+        function removeFromFavorites(index) {
+            const favoriteQuotes = JSON.parse(localStorage.getItem("favoriteQuotes")) || [];
+
+            if (index >= 0 && index < favoriteQuotes.length) {
+                // Remove the quote at the specified index
+                favoriteQuotes.splice(index, 1);
+                localStorage.setItem("favoriteQuotes", JSON.stringify(favoriteQuotes));
+                // Update the displayed favorites
+                displayFavorites();
+            }
+        }
+
+        displayFavorites();
+    </script>
+</body>
+</html>
+

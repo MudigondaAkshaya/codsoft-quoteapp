@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+
+    <title>Quote of the Day App</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffc0cb; /* Set your desired background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #introScreen {
+            text-align: center;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0;
+            }
+            25%, 75% {
+                opacity: 1;
+            }
+        }
+
+        .pink-background {
+            display: none; /* Initially hide the main content */
+        }
+    </style>
+</head>
+<body>
+    <div id="introScreen">
+        <h1>DQUOTES</h1>
+    </div>
+
+    <div class="pink-background quote-box">
+        <h2>Dquotes</h2>
+        <blockquote id="quote">loading..</blockquote>
+        <span id="author">loading..</span>
+        <div>
+            <button onclick="getQuote(api_url)">🔄</button>
+            <button onclick="shareQuote()">📤</button>
+            <button onclick="saveFavorite()">💾</button>
+            <a href="favorites.html" class="favorites-link"><button>📚</button></a>
+        </div>
+    </div>
+
+    <script>
+        const introScreen = document.getElementById("introScreen");
+        const mainContent = document.querySelector(".pink-background");
+
+        // Hide the intro screen after 2 seconds
+        setTimeout(() => {
+            introScreen.style.display = "none";
+            mainContent.style.display = "block"; // Show the main content
+        }, 2000);
+
+        const quote = document.getElementById("quote");
+        const author = document.getElementById("author");
+        const api_url = "https://api.quotable.io/random";
+
+        async function getQuote(url) {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            quote.innerHTML = data.content;
+            author.innerHTML = data.author;
+        }
+
+        async function shareQuote() {
+            if (navigator.share) {
+                try {
+                    const content = `${quote.innerText} - ${author.innerText}`;
+                    await navigator.share({
+                        title: "Quote of the Day",
+                        text: content,
+                    });
+                } catch (error) {
+                    console.error("Error sharing:", error);
+                }
+            } else {
+                alert("Sharing is not supported in this browser. You can manually share the quote.");
+            }
+        }
+
+        function saveFavorite() {
+            const currentQuote = {
+                content: quote.innerText,
+                author: author.innerText,
+            };
+            const favoriteQuotes = JSON.parse(localStorage.getItem("favoriteQuotes")) || [];
+            favoriteQuotes.push(currentQuote);
+            localStorage.setItem("favoriteQuotes", JSON.stringify(favoriteQuotes));
+            alert("Quote saved to favorites!");
+        }
+
+        getQuote(api_url);
+        window.addEventListener('orientationchange', function () {
+  if (window.orientation === 0 || window.orientation === 180) {
+    // Portrait orientation
+    // Apply styles or layout changes for vertical orientation
+  } else {
+    // Landscape orientation
+    // Apply styles or layout changes for horizontal orientation
+  }
+});
+
+    </script>
+    
+      
+</body>
+</html>
